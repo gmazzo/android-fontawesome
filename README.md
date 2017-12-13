@@ -18,12 +18,10 @@ On your `build.gradle` add:
 ```
 [ ![Download](https://api.bintray.com/packages/gmazzo/maven/android-fontawesome/images/download.svg) ](https://bintray.com/gmazzo/maven/android-fontawesome/_latestVersion)
 
-Pros:
-- Ready to use library
-- Improved build time
-
-Cons:
-- As it's pre-built, it may be outdated against latest `Font-Awesome` release.
+Pros|Cons
+----|----
+Ready to use library|As it's pre-built, it may be outdated against latest `Font-Awesome` release.
+Improved build time|
 
 ### As a Gradle module
 1. Checkout or clone the repo
@@ -33,11 +31,9 @@ Cons:
 include ':library'
 ```
 
-Pros:
-- Library is updated on each build
-
-Cons:
-- Increased build time
+Pros|Cons
+----|----
+Library is updated on each build|Increased build time
 
 ## Usage
 Referencing Glyphs as `Drawables` inside an `ImageView` (or any other drawable capable view)
