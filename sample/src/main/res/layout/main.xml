@@ -1,73 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.flexbox.FlexboxLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin">
+    android:padding="@dimen/margin"
+    app:flexWrap="wrap"
+    app:alignContent="flex_start">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/glyphs_as_images_vectors" />
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:text="@string/glyphs_as_images_vectors"
+        app:layout_wrapBefore="true" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:src="@drawable/ic_glyph_bell" />
+    <ImageView
+        style="@style/ShowcaseImage"
+        android:src="@drawable/ic_glyph_bell" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:src="@drawable/ic_glyph_cloud" />
+    <ImageView
+        style="@style/ShowcaseImage"
+        android:src="@drawable/ic_glyph_cloud" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:src="@drawable/ic_glyph_skype" />
+    <ImageView
+        style="@style/ShowcaseImage"
+        android:src="@drawable/ic_glyph_beer" />
 
-    </LinearLayout>
+    <ImageView
+        style="@style/ShowcaseImage"
+        android:src="@drawable/ic_glyph_cogs" />
+
+    <ImageView
+        style="@style/ShowcaseImage"
+        android:src="@drawable/ic_glyph_font" />
+
+    <ImageView
+        style="@style/ShowcaseImage"
+        android:src="@drawable/ic_glyph_food" />
+
+    <ImageView
+        style="@style/ShowcaseImage"
+        android:src="@drawable/ic_glyph_home" />
+
+    <ImageView
+        style="@style/ShowcaseImage"
+        android:src="@drawable/ic_glyph_hospital" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin"
-        android:text="@string/glyphs_as_text_font" />
+        android:text="@string/glyphs_as_text_font"
+        app:layout_wrapBefore="true" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <TextView
+        style="@style/ShowcaseText"
+        android:text="@string/glyph_bell" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:fontFamily="@font/fontawesome"
-            android:text="@string/glyph_cogs" />
+    <TextView
+        style="@style/ShowcaseText"
+        android:text="@string/glyph_cloud" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:fontFamily="@font/fontawesome"
-            android:text="@string/glyph_font" />
+    <TextView
+        style="@style/ShowcaseText"
+        android:text="@string/glyph_beer" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:fontFamily="@font/fontawesome"
-            android:text="@string/glyph_food" />
+    <TextView
+        style="@style/ShowcaseText"
+        android:text="@string/glyph_cogs" />
 
-    </LinearLayout>
+    <TextView
+        style="@style/ShowcaseText"
+        android:text="@string/glyph_font" />
 
-</LinearLayout>
+    <TextView
+        style="@style/ShowcaseText"
+        android:text="@string/glyph_food" />
+
+    <TextView
+        style="@style/ShowcaseText"
+        android:text="@string/glyph_home" />
+
+    <TextView
+        style="@style/ShowcaseText"
+        android:text="@string/glyph_hospital" />
+
+</com.google.android.flexbox.FlexboxLayout>
