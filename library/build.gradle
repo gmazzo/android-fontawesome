@@ -70,7 +70,7 @@ task generateFontawesomeResources {
 
             if (d) {
                 def name = glyph.'@glyph-name'.text().toLowerCase().replaceAll('[^a-z0-9_]+', '_')
-                def file = file("$drawablesDir/${name}.xml")
+                def file = file("$drawablesDir/ic_glyph_${name}.xml")
 
                 def offsetX = (glyph.'@horiz-adv-x'.text() ?: defOffsetX) as double
 
@@ -103,14 +103,14 @@ task generateFontawesomeResources {
         xml.mkp.xmlDeclaration version: '1.0', encoding: 'UTF-8'
         xml.resources() {
             resValues.each { k, v ->
-                string(name: "fontawesome_$k", v)
+                string(name: "glyph_$k", translatable: false, v)
             }
         }
     }
 }
 
 android {
-    sourceSets.main.res.srcDirs drawablesDir.parentFile
+    sourceSets.main.res.srcDirs resourcesDir
     libraryVariants.all {
         it.mergeResources.dependsOn downloadFontTtf, generateFontawesomeResources
     }

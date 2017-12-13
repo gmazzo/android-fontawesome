@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="app_name">Sample</string>
+
+    <string name="glyphs_as_images_vectors">Glyphs as images (vectors)</string>
+    <string name="glyphs_as_text_font">Glyphs as Text (font)</string>
+
+</resources>
