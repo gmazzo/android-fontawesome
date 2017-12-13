@@ -9,7 +9,7 @@ This library recompiles `Font-Awesome` to provide:
 Note: if you are targeting API 25 or below, you have to setup `AppCompat` library as well to allow `android:fontFamily` attribute to work.
 
 ## Import
-### As Gradle dependency
+### As a Gradle dependency
 On your `build.gradle` add:
 ```groovy
     dependencies {
@@ -25,7 +25,7 @@ Pros:
 Cons:
 - As it's pre-built, it may be outdated against latest `Font-Awesome` release.
 
-### As Gradle module
+### As a Gradle module
 1. Checkout or clone the repo
 2. Copy the 'library' folder into your app root directory
 3. In your 'settings.gradle' add:
