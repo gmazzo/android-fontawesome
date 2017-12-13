@@ -3,8 +3,8 @@ An Android library port of [Font-Awesome](https://github.com/FortAwesome/Font-Aw
 
 ## How it works
 This library recompiles `Font-Awesome` to provide:
-- A ready to use set of `VectorDrawable` icons, check for any `ic_glyph_*`.
-- A ready to use `font` resource, to be applied on `TextView`'s `android:fontFamily` attribute.
+- A ready to use set of `VectorDrawable` icons, check for any `@drawable/ic_glyph_*`.
+- A ready to use `font` resource, to be applied on `TextView`'s `android:fontFamily="@font/fontawesome"` attribute.
 
 Note: if you are targeting API 25 or below, you have to setup `AppCompat` library as well to allow `android:fontFamily` attribute to work.
 
