@@ -5,20 +5,10 @@ def drawablesDir = file("$resourcesDir/drawable")
 def stringResFile = file("$resourcesDir/values/fontawesome.xml")
 
 def baseUrl = 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/fonts'
-def ttfFontUrl = "$baseUrl/fontawesome-webfont.ttf"
-def ttfFontFile = file("$resourcesDir/font/fontawesome.ttf")
 def svgFontUrl = "$baseUrl/fontawesome-webfont.svg"
 def svgFontFile = file("$buildDir/fontawesome-webfont.svg")
-
-task downloadFontTtf {
-    inputs.property 'url', ttfFontUrl
-    outputs.file ttfFontFile
-
-    doFirst {
-        ttfFontFile.parentFile.mkdirs()
-        ttfFontFile.newOutputStream() << new URL(ttfFontUrl).openStream()
-    }
-}
+def ttfFontUrl = "$baseUrl/fontawesome-webfont.ttf"
+def ttfFontFile = file("$resourcesDir/font/fontawesome.ttf")
 
 task downloadFontSvg {
     inputs.property 'url', svgFontUrl
@@ -30,7 +20,7 @@ task downloadFontSvg {
     }
 }
 
-task generateFontawesomeResources {
+task generateGlyphsResValues {
     inputs.file svgFontFile
     outputs.dir drawablesDir
     outputs.file stringResFile
@@ -97,9 +87,19 @@ task generateFontawesomeResources {
     }
 }
 
+task generateFontResValues {
+    inputs.property 'url', ttfFontUrl
+    outputs.file ttfFontFile
+
+    doFirst {
+        ttfFontFile.parentFile.mkdirs()
+        ttfFontFile.newOutputStream() << new URL(ttfFontUrl).openStream()
+    }
+}
+
 android {
     sourceSets.main.res.srcDirs resourcesDir
     libraryVariants.all {
-        it.mergeResources.dependsOn downloadFontTtf, generateFontawesomeResources
+        tasks["generate${it.name.capitalize()}ResValues"].dependsOn generateFontResValues, generateGlyphsResValues
     }
 }
