@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+apply from: 'fontawesome.gradle'
 
 android {
     compileSdkVersion 26
@@ -10,108 +13,57 @@ android {
     }
 }
 
-import groovy.xml.MarkupBuilder
+def repoDesc = 'An Android library port of https://github.com/FortAwesome/Font-Awesome.'
+def repoName = 'android-fontawesome'
+def repoUrl = "https://github.com/gmazzo/$repoName"
 
-def resourcesDir = "$buildDir/generated/res/fontawesome"
-def drawablesDir = file("$resourcesDir/drawable")
-def stringResFile = file("$resourcesDir/values/fontawesome.xml")
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
 
-def baseUrl = 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/fonts'
-def ttfFontUrl = "$baseUrl/fontawesome-webfont.ttf"
-def ttfFontFile = file("$resourcesDir/font/fontawesome.ttf")
-def svgFontUrl = "$baseUrl/fontawesome-webfont.svg"
-def svgFontFile = file("$buildDir/fontawesome-webfont.svg")
-
-task downloadFontTtf {
-    inputs.property 'url', ttfFontUrl
-    outputs.file ttfFontFile
-
-    doFirst {
-        ttfFontFile.parentFile.mkdirs()
-        ttfFontFile.newOutputStream() << new URL(ttfFontUrl).openStream()
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = repoName
+        desc = repoDesc
+        vcsUrl = "${repoUrl}.git"
+        githubRepo = repoUrl.replaceFirst('\\Qhttps://github.com/\\E', '');
+        githubReleaseNotesFile = 'README.md'
+        licenses = ['Public Domain']
+        labels = ['aar', 'android', 'font', 'awesome', 'fontawesome']
+        publicDownloadNumbers = true
     }
 }
 
-task downloadFontSvg {
-    inputs.property 'url', svgFontUrl
-    outputs.file svgFontFile
-
-    doFirst {
-        svgFontFile.parentFile.mkdirs()
-        svgFontFile.newOutputStream() << new URL(svgFontUrl).openStream()
-    }
-}
-
-task generateFontawesomeResources {
-    inputs.file svgFontFile
-    outputs.dir drawablesDir
-    outputs.file stringResFile
-    dependsOn downloadFontSvg
-
-    doFirst {
-        drawablesDir.mkdirs()
-        stringResFile.parentFile.mkdirs()
-
-        def resValues = [:]
-
-        def parser = new XmlSlurper()
-        parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false)
-        parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
-
-        def svg = parser.parseText(svgFontFile.text)
-
-        def bbox = svg.defs.font.'font-face'.'@bbox'.text().tokenize(' ')*.toDouble()
-        def width = bbox[2] - bbox[0]
-        def height = bbox[3] - bbox[1]
-        def defOffsetX = (svg.defs.font.'@horiz-adv-x'.text() ?: 0) as double
-
-        svg.defs.font.glyph.each { glyph ->
-            def d = glyph.'@d'.text()
-
-            if (d) {
-                def name = glyph.'@glyph-name'.text().toLowerCase().replaceAll('[^a-z0-9_]+', '_')
-                def file = file("$drawablesDir/ic_glyph_${name}.xml")
-
-                def offsetX = (glyph.'@horiz-adv-x'.text() ?: defOffsetX) as double
-
-                def xml = new MarkupBuilder(file.newWriter())
-                xml.mkp.xmlDeclaration version: '1.0', encoding: 'UTF-8'
-                xml.vector(
-                        'xmlns:android': 'http://schemas.android.com/apk/res/android',
-                        'android:width': '24dp',
-                        'android:height': '24dp',
-                        'android:viewportWidth': width,
-                        'android:viewportHeight': height) {
-                    group(
-                            'android:scaleX': 1,
-                            'android:scaleY': -height / width,
-                            'android:pivotX': width / 2,
-                            'android:pivotY': height / 2) {
-                        group(
-                                'android:translateX': -bbox[0] + (offsetX ? (width - offsetX) / 2 : 0),
-                                'android:translateY': -bbox[1]) {
-                            path('android:fillColor': '#000', 'android:pathData': d)
-                        }
-                    }
-                }
-
-                resValues.put(name, glyph.'@unicode')
-            }
-        }
-
-        def xml = new MarkupBuilder(stringResFile.newWriter())
-        xml.mkp.xmlDeclaration version: '1.0', encoding: 'UTF-8'
-        xml.resources() {
-            resValues.each { k, v ->
-                string(name: "glyph_$k", translatable: false, v)
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name repoDesc
+                url repoUrl
             }
         }
     }
 }
 
-android {
-    sourceSets.main.res.srcDirs resourcesDir
-    libraryVariants.all {
-        it.mergeResources.dependsOn downloadFontTtf, generateFontawesomeResources
-    }
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += configurations.compile
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
 }
