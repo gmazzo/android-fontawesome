@@ -13,7 +13,7 @@ Note: if you are targeting API 25 or below, you have to setup `AppCompat` librar
 On your `build.gradle` add:
 ```groovy
     dependencies {
-        implementation 'com.github.gmazzo:android-fontawesome:0.1'
+        implementation 'com.github.gmazzo:fontawesome:0.1'
     }
 ```
 [ ![Download](https://api.bintray.com/packages/gmazzo/maven/android-fontawesome/images/download.svg) ](https://bintray.com/gmazzo/maven/android-fontawesome/_latestVersion)
