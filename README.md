@@ -52,6 +52,17 @@ Referencing Glyphs as inside an `TextView`
         android:fontFamily="@font/fontawesome"
         android:text="@string/glyph_hospital" />
 ```
+## Reducing APK size
+This library will add **tons** of new `drawable` resources, one per glyph on the **Awesome** font. If you have ProGuard enabled (and you should), add a `shrinkResources true` line to your release configuration:
+```groovy
+buildTypes {
+    release {
+        shrinkResources true
+        minifyEnabled true
+        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+}
+```
 
 ## Demo
 ![Screenshot](sample/screenshot.png)
