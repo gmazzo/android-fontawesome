@@ -13,7 +13,7 @@ Note: if you are targeting API 25 or below, you have to setup `AppCompat` librar
 On your `build.gradle` add:
 ```groovy
 plugins {
-    id 'com.github.gmazzo.fontawesome' version '0.2'
+    id 'com.github.gmazzo.fontawesome' version '0.3'
 }
 ```
 Check [https://plugins.gradle.org/plugin/com.github.gmazzo.fontawesome](https://plugins.gradle.org/plugin/com.github.gmazzo.fontawesome) for other instructions
@@ -27,7 +27,7 @@ You have control of which resources are imported|
 On your `build.gradle` add:
 ```groovy
     dependencies {
-        implementation 'com.github.gmazzo:fontawesome:0.2'
+        implementation 'com.github.gmazzo:fontawesome:0.3'
     }
 ```
 [ ![Download](https://api.bintray.com/packages/gmazzo/maven/android-fontawesome/images/download.svg) ](https://bintray.com/gmazzo/maven/android-fontawesome/_latestVersion)
@@ -61,14 +61,19 @@ Tag|Type|Usage
 ---|----|-----
 includeGlyphs|list of `String`|A set of glyphs to include when processing the font. By default includes all resources
 excludeGlyphs|list of `String`|A set of glyphs to exclude when processing the font. By default excludes none
-includeGlyphsPattern|a RegExp|A glyphs name Pattern (RexExp) to include when processing the font. By default includes all resources
-excludeGlyphsPattern|a RegExp|A glyphs name Pattern (RexExp) to exclude when processing the font. By default excludes none
+includeGlyphsPattern|a `Pattern`|A glyphs name Pattern (RexExp) to include when processing the font. By default includes all resources
+excludeGlyphsPattern|a `Pattern`|A glyphs name Pattern (RexExp) to exclude when processing the font. By default excludes none
+shouldIncludeGlyph|a Gradle's `Closure`|Computes if it should be included as a resource or not. By default executes the logic of `includeGlyphs, `includeGlyphsPattern`, `excludeGlyphs` and `excludeGlyphsPattern`.
+glyphToResourceName|a Gradle's `Closure`|Computes the Android's resource name for a given glyph.
+drawableResourceName|a Gradle's `Closure`|Computes the Drawable's resource name for a given glyph Android's resource name. By default it prefixes an "ic_".
+generateFontResource|`boolean`|A flag to indicate if the `@font/fontawesome` should be generated. Defaults to `true`
+generateDrawableGlyphsResources|`boolean`|A flag to indicate if the `@drawable/ic_glyph_XXX` should be generated. Defaults to `true`
 
 ### Example: include just 3 resources
 On your `build.gradle` add:
 ```groovy
 fontawesome {
-    includeGlyphs = [ 'glass', 'music', 'search' ]
+    includeGlyphs 'glass', 'music', 'search'
 }
 ```
 

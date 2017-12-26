@@ -2,7 +2,9 @@ package com.github.gmazzo.gradle.plugins
 
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
-import groovy.xml.MarkupBuilder
+import com.github.gmazzo.gradle.plugins.tasks.DownloadFileTask
+import com.github.gmazzo.gradle.plugins.tasks.GenerateFontDrawablesTask
+import com.github.gmazzo.gradle.plugins.tasks.GenerateFontStringResourcesTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -17,98 +19,40 @@ public class FontAwesomePlugin implements Plugin<Project> {
             def drawablesDir = file("$resourcesDir/drawable")
             def stringResFile = file("$resourcesDir/values/fontawesome.xml")
 
-            def baseUrl = 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/fonts'
-            def svgFontUrl = "$baseUrl/fontawesome-webfont.svg"
-            def svgFontFile = file("$buildDir/fontawesome-webfont.svg")
-            def ttfFontUrl = "$baseUrl/fontawesome-webfont.ttf"
+            def baseUrl = new URL('https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/fonts')
+            def svgFontUrl = new URL("$baseUrl/fontawesome-webfont.svg")
+            def svgFontFile = file("$buildDir/intermediates/fontawesome/webfont.svg")
+            def ttfFontUrl = new URL("$baseUrl/fontawesome-webfont.ttf")
             def ttfFontFile = file("$resourcesDir/font/fontawesome.ttf")
 
-            tasks.create('downloadFontAwesomeSvg') {
-                inputs.property 'url', svgFontUrl
-                outputs.file svgFontFile
-
-                doFirst {
-                    svgFontFile.parentFile.mkdirs()
-                    svgFontFile.newOutputStream() << new URL(svgFontUrl).openStream()
-                }
+            tasks.create('downloadFontAwesomeSvg', DownloadFileTask) {
+                url = svgFontUrl
+                outFile = svgFontFile
             }
 
-            tasks.create('generateFontAwesomeResValues') {
-                inputs.file svgFontFile
-                outputs.dir drawablesDir
-                outputs.file stringResFile
+            tasks.create('generateFontAwesomeResFont', DownloadFileTask) {
+                onlyIf { extension.generateFontResource }
+
+                url = ttfFontUrl
+                outFile = ttfFontFile
+            }
+
+            tasks.create('generateFontAwesomeResValues', GenerateFontStringResourcesTask) {
+                onlyIf { extension.generateFontResource }
                 dependsOn downloadFontAwesomeSvg
 
-                doFirst {
-                    drawablesDir.mkdirs()
-                    stringResFile.parentFile.mkdirs()
-
-                    def resValues = [:]
-
-                    def parser = new XmlSlurper()
-                    parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false)
-                    parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
-
-                    def svg = parser.parseText(svgFontFile.text)
-
-                    def bbox = svg.defs.font.'font-face'.'@bbox'.text().tokenize(' ')*.toDouble()
-                    def width = bbox[2] - bbox[0]
-                    def height = bbox[3] - bbox[1]
-                    def defOffsetX = (svg.defs.font.'@horiz-adv-x'.text() ?: 0) as double
-
-                    svg.defs.font.glyph.each { glyph ->
-                        def glyphName = glyph.'@glyph-name'.text()
-                        def d = glyph.'@d'.text()
-
-                        if (d && extension.shouldIncludeGlyph(glyphName)) {
-                            def resName = extension.glyphToResourceName(glyphName)
-                            def file = file("$drawablesDir/ic_glyph_${resName}.xml")
-
-                            def offsetX = (glyph.'@horiz-adv-x'.text() ?: defOffsetX) as double
-
-                            def xml = new MarkupBuilder(file.newWriter())
-                            xml.mkp.xmlDeclaration version: '1.0', encoding: 'UTF-8'
-                            xml.vector(
-                                    'xmlns:android': 'http://schemas.android.com/apk/res/android',
-                                    'android:width': '24dp',
-                                    'android:height': '24dp',
-                                    'android:viewportWidth': width,
-                                    'android:viewportHeight': height) {
-                                group(
-                                        'android:scaleX': 1,
-                                        'android:scaleY': -height / width,
-                                        'android:pivotX': width / 2,
-                                        'android:pivotY': height / 2) {
-                                    group(
-                                            'android:translateX': -bbox[0] + (offsetX ? (width - offsetX) / 2 : 0),
-                                            'android:translateY': -bbox[1]) {
-                                        path('android:fillColor': '#000', 'android:pathData': d)
-                                    }
-                                }
-                            }
-
-                            resValues.put(resName, glyph.'@unicode')
-                        }
-                    }
-
-                    def xml = new MarkupBuilder(stringResFile.newWriter())
-                    xml.mkp.xmlDeclaration version: '1.0', encoding: 'UTF-8'
-                    xml.resources() {
-                        resValues.each { k, v ->
-                            string(name: "glyph_$k", translatable: false, v)
-                        }
-                    }
-                }
+                it.extension = extension
+                it.svgFont = svgFontFile
+                it.outputFile = stringResFile
             }
 
-            tasks.create('generateFontAwesomeResFont') {
-                inputs.property 'url', ttfFontUrl
-                outputs.file ttfFontFile
+            tasks.create('generateFontAwesomeResDrawables', GenerateFontDrawablesTask) {
+                onlyIf { extension.generateDrawableGlyphsResources }
+                dependsOn downloadFontAwesomeSvg
 
-                doFirst {
-                    ttfFontFile.parentFile.mkdirs()
-                    ttfFontFile.newOutputStream() << new URL(ttfFontUrl).openStream()
-                }
+                it.extension = extension
+                it.svgFont = svgFontFile
+                it.outputDir = drawablesDir
             }
 
             afterEvaluate {
@@ -120,7 +64,7 @@ public class FontAwesomePlugin implements Plugin<Project> {
                     sourceSets.main.res.srcDirs resourcesDir
 
                     (it.hasProperty('applicationVariants') ? applicationVariants : libraryVariants).all {
-                        tasks["generate${it.name.capitalize()}ResValues"].dependsOn generateFontAwesomeResFont, generateFontAwesomeResValues
+                        tasks["generate${it.name.capitalize()}ResValues"].dependsOn generateFontAwesomeResFont, generateFontAwesomeResValues, generateFontAwesomeResDrawables
                     }
                 }
             }
