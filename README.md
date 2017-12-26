@@ -20,7 +20,8 @@ Check [https://plugins.gradle.org/plugin/com.github.gmazzo.fontawesome](https://
 
 Pros|Cons
 ----|----
-Library is updated on each build|Increased build time
+Library is updated on each build|Higher build time if many resources (or all) are used
+You have control of which resources are imported|
 
 ### As a Gradle dependency
 On your `build.gradle` add:
