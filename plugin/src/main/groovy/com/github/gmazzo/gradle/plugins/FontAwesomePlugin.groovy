@@ -10,10 +10,6 @@ public class FontAwesomePlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        if (!project.plugins.any { p -> p instanceof AppPlugin || p instanceof LibraryPlugin }) {
-            throw new IllegalStateException('The \'com.android.application\' plugin is required.')
-        }
-
         def extension = project.extensions.create('fontawesome', FontAwesomePluginExtension)
 
         project.with {
@@ -27,7 +23,7 @@ public class FontAwesomePlugin implements Plugin<Project> {
             def ttfFontUrl = "$baseUrl/fontawesome-webfont.ttf"
             def ttfFontFile = file("$resourcesDir/font/fontawesome.ttf")
 
-            tasks.create('fontawesomeDownloadFontSvg') {
+            tasks.create('downloadFontAwesomeSvg') {
                 inputs.property 'url', svgFontUrl
                 outputs.file svgFontFile
 
@@ -37,11 +33,11 @@ public class FontAwesomePlugin implements Plugin<Project> {
                 }
             }
 
-            tasks.create('fontawesomeGenerateGlyphsResValues') {
+            tasks.create('generateFontAwesomeResValues') {
                 inputs.file svgFontFile
                 outputs.dir drawablesDir
                 outputs.file stringResFile
-                dependsOn fontawesomeDownloadFontSvg
+                dependsOn downloadFontAwesomeSvg
 
                 doFirst {
                     drawablesDir.mkdirs()
@@ -105,7 +101,7 @@ public class FontAwesomePlugin implements Plugin<Project> {
                 }
             }
 
-            tasks.create('fontawesomeGenerateFontResValues') {
+            tasks.create('generateFontAwesomeResFont') {
                 inputs.property 'url', ttfFontUrl
                 outputs.file ttfFontFile
 
@@ -115,11 +111,17 @@ public class FontAwesomePlugin implements Plugin<Project> {
                 }
             }
 
-            android {
-                sourceSets.main.res.srcDirs resourcesDir
+            afterEvaluate {
+                if (!plugins.any { p -> p instanceof AppPlugin || p instanceof LibraryPlugin }) {
+                    throw new IllegalStateException('The Android plugin is required.')
+                }
 
-                (it.hasProperty('applicationVariants') ? applicationVariants : libraryVariants).all {
-                    tasks["generate${it.name.capitalize()}ResValues"].dependsOn fontawesomeGenerateFontResValues, fontawesomeGenerateGlyphsResValues
+                android {
+                    sourceSets.main.res.srcDirs resourcesDir
+
+                    (it.hasProperty('applicationVariants') ? applicationVariants : libraryVariants).all {
+                        tasks["generate${it.name.capitalize()}ResValues"].dependsOn generateFontAwesomeResFont, generateFontAwesomeResValues
+                    }
                 }
             }
         }
