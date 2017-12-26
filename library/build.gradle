@@ -1,7 +1,17 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.gmazzo:gradle-fontawesome-plugin:<LOCAL>'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
-apply from: 'fontawesome.gradle'
+apply plugin: 'com.github.gmazzo.fontawesome'
 
 android {
     compileSdkVersion 26
@@ -27,7 +37,7 @@ bintray {
         name = repoName
         desc = repoDesc
         vcsUrl = "${repoUrl}.git"
-        githubRepo = repoUrl.replaceFirst('\\Qhttps://github.com/\\E', '');
+        githubRepo = repoUrl.replaceFirst('\\Qhttps://github.com/\\E', '')
         githubReleaseNotesFile = 'README.md'
         licenses = ['Public Domain']
         labels = ['aar', 'android', 'font', 'awesome', 'fontawesome']

@@ -1,0 +1,47 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'maven'
+    id 'com.gradle.plugin-publish' version '0.9.7'
+}
+
+apply from: '../buildShared.gradle'
+
+def pluginId = 'com.github.gmazzo.fontawesome'
+def repoName = 'gradle-fontawesome-plugin'
+def repoDesc = 'An Android-Gradle plugin port of https://github.com/FortAwesome/Font-Awesome.'
+def repoUrl = "https://github.com/gmazzo/$repoName"
+def repoTags = ['android', 'gradle', 'font', 'awesome', 'fontawesome']
+
+dependencies {
+    compileOnly 'com.android.tools.build:gradle:3.0.1'
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.groupId = "gradle.plugin.gmazzo"
+    }
+}
+
+gradlePlugin {
+    plugins {
+        fontawesome {
+            id = pluginId
+            implementationClass = 'com.github.gmazzo.gradle.plugins.FontAwesomePlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = repoUrl
+    vcsUrl = repoUrl
+    description = repoDesc
+    tags = repoTags
+
+    plugins {
+        fontawesome {
+            id = pluginId
+            displayName = 'Gradle FontAwesome Plugin'
+        }
+    }
+}
