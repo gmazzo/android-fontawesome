@@ -59,13 +59,13 @@ The plugins add the `fontawesome` closure to your project:
 
 Tag|Type|Usage
 ---|----|-----
-includeGlyphs|list of `String`|A set of glyphs to include when processing the font. By default includes all resources
-excludeGlyphs|list of `String`|A set of glyphs to exclude when processing the font. By default excludes none
-includeGlyphsPattern|a `Pattern`|A glyphs name Pattern (RexExp) to include when processing the font. By default includes all resources
-excludeGlyphsPattern|a `Pattern`|A glyphs name Pattern (RexExp) to exclude when processing the font. By default excludes none
-shouldIncludeGlyph|a Gradle's `Closure`|Computes if it should be included as a resource or not. By default executes the logic of `includeGlyphs, `includeGlyphsPattern`, `excludeGlyphs` and `excludeGlyphsPattern`.
-glyphToResourceName|a Gradle's `Closure`|Computes the Android's resource name for a given glyph.
-drawableResourceName|a Gradle's `Closure`|Computes the Drawable's resource name for a given glyph Android's resource name. By default it prefixes an "ic_".
+includeGlyphs|`String[]`|A set of glyphs to include when processing the font. By default includes all resources
+excludeGlyphs|`String[]`|A set of glyphs to exclude when processing the font. By default excludes none
+includeGlyphsPattern|`Pattern`|A glyphs name Pattern (RexExp) to include when processing the font. By default includes all resources
+excludeGlyphsPattern|`Pattern`|A glyphs name Pattern (RexExp) to exclude when processing the font. By default excludes none
+shouldIncludeGlyph|`Closure`|Computes if it should be included as a resource or not. By default executes the logic of `includeGlyphs, `includeGlyphsPattern`, `excludeGlyphs` and `excludeGlyphsPattern`.
+glyphToResourceName|`Closure`|Computes the Android's resource name for a given glyph.
+drawableResourceName|`Closure`|Computes the Drawable's resource name for a given glyph Android's resource name. By default it prefixes an "ic_".
 generateFontResource|`boolean`|A flag to indicate if the `@font/fontawesome` should be generated. Defaults to `true`
 generateDrawableGlyphsResources|`boolean`|A flag to indicate if the `@drawable/ic_glyph_XXX` should be generated. Defaults to `true`
 
