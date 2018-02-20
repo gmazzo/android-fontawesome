@@ -4,7 +4,7 @@
     <application
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:icon="@drawable/ic_glyph_font">
+        android:icon="@drawable/ic_glyph_solid_font">
 
         <activity android:name=".MainActivity">
             <intent-filter>

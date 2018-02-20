@@ -16,35 +16,35 @@
 
     <ImageView
         style="@style/ShowcaseImage"
-        android:src="@drawable/ic_glyph_bell" />
+        android:src="@drawable/ic_glyph_solid_bell" />
 
     <ImageView
         style="@style/ShowcaseImage"
-        android:src="@drawable/ic_glyph_cloud" />
+        android:src="@drawable/ic_glyph_solid_cloud" />
 
     <ImageView
         style="@style/ShowcaseImage"
-        android:src="@drawable/ic_glyph_beer" />
+        android:src="@drawable/ic_glyph_solid_beer" />
 
     <ImageView
         style="@style/ShowcaseImage"
-        android:src="@drawable/ic_glyph_cogs" />
+        android:src="@drawable/ic_glyph_solid_cogs" />
 
     <ImageView
         style="@style/ShowcaseImage"
-        android:src="@drawable/ic_glyph_font" />
+        android:src="@drawable/ic_glyph_solid_font" />
 
     <ImageView
         style="@style/ShowcaseImage"
-        android:src="@drawable/ic_glyph_food" />
+        android:src="@drawable/ic_glyph_solid_futbol" />
 
     <ImageView
         style="@style/ShowcaseImage"
-        android:src="@drawable/ic_glyph_home" />
+        android:src="@drawable/ic_glyph_solid_home" />
 
     <ImageView
         style="@style/ShowcaseImage"
-        android:src="@drawable/ic_glyph_hospital" />
+        android:src="@drawable/ic_glyph_solid_hospital" />
 
     <TextView
         android:layout_width="match_parent"
@@ -55,34 +55,34 @@
 
     <TextView
         style="@style/ShowcaseText"
-        android:text="@string/glyph_bell" />
+        android:text="@string/glyph_solid_bell" />
 
     <TextView
         style="@style/ShowcaseText"
-        android:text="@string/glyph_cloud" />
+        android:text="@string/glyph_solid_cloud" />
 
     <TextView
         style="@style/ShowcaseText"
-        android:text="@string/glyph_beer" />
+        android:text="@string/glyph_solid_beer" />
 
     <TextView
         style="@style/ShowcaseText"
-        android:text="@string/glyph_cogs" />
+        android:text="@string/glyph_solid_cogs" />
 
     <TextView
         style="@style/ShowcaseText"
-        android:text="@string/glyph_font" />
+        android:text="@string/glyph_solid_font" />
 
     <TextView
         style="@style/ShowcaseText"
-        android:text="@string/glyph_food" />
+        android:text="@string/glyph_solid_futbol" />
 
     <TextView
         style="@style/ShowcaseText"
-        android:text="@string/glyph_home" />
+        android:text="@string/glyph_solid_home" />
 
     <TextView
         style="@style/ShowcaseText"
-        android:text="@string/glyph_hospital" />
+        android:text="@string/glyph_solid_hospital" />
 
 </com.google.android.flexbox.FlexboxLayout>

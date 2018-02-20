@@ -23,6 +23,8 @@ android {
     }
 }
 
+archivesBaseName = 'fontawesome'
+
 def repoDesc = 'An Android library port of https://github.com/FortAwesome/Font-Awesome.'
 def repoName = 'android-fontawesome'
 def repoUrl = "https://github.com/gmazzo/$repoName"

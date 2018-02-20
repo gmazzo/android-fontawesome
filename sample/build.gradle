@@ -13,7 +13,7 @@ android {
 }
 
 dependencies {
-    implementation project(':fontawesome')
+    implementation project(':library')
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.google.android:flexbox:0.3.1', {

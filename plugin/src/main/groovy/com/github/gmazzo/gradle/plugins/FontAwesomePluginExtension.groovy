@@ -3,6 +3,11 @@ package com.github.gmazzo.gradle.plugins
 class FontAwesomePluginExtension {
 
     /**
+     * A set of font-styles to include when processing the font. By default includes all styles.
+     */
+    private FontStyle[] includeStyles = FontStyle.values()
+
+    /**
      * A set of glyphs to include when processing the font. By default includes all resources.
      */
     private String[] includeGlyphs
@@ -34,9 +39,9 @@ class FontAwesomePluginExtension {
     }
 
     /**
-     * Computes the Android's resource name for a given glyph.
+     * Computes the Android's resource name for a given font style and glyph.
      */
-    private Closure<String> glyphToResourceName = { String glyphName -> "glyph_${glyphName.toLowerCase().replaceAll('[^a-z0-9_]+', '_')}" }
+    private Closure<String> glyphToResourceName = { String fontStyle, String glyphName -> "glyph_${fontStyle}_${glyphName.toLowerCase().replaceAll('[^a-z0-9_]+', '_')}" }
 
     /**
      * Computes the Drawable's resource name for a given glyph Android's resource name. By default it prefixes an "ic_".
@@ -52,6 +57,14 @@ class FontAwesomePluginExtension {
      * A flag to indicate if the <code>@drawable/ic_glyph_XXX</code> should be generated. Defaults to <code>true</code>
      */
     private boolean generateDrawableGlyphsResources = true
+
+    FontStyle[] getIncludeStyles() {
+        return includeStyles
+    }
+
+    void setIncludeStyles(FontStyle[] includeStyles) {
+        this.includeStyles = includeStyles
+    }
 
     String[] getIncludeGlyphs() {
         return includeGlyphs
@@ -124,5 +137,5 @@ class FontAwesomePluginExtension {
     void setGenerateDrawableGlyphsResources(boolean generateDrawableGlyphsResources) {
         this.generateDrawableGlyphsResources = generateDrawableGlyphsResources
     }
-    
+
 }

@@ -17,5 +17,5 @@ task clean(type: Delete) {
 }
 
 task publish {
-    dependsOn gradle.includedBuild('fontawesome-plugin').task(':publishPlugins'), ':fontawesome:bintrayUpload'
+    dependsOn gradle.includedBuild('plugin').task(':publishPlugins'), ':library:bintrayUpload'
 }

@@ -1,7 +1,5 @@
 include ':library', ':sample'
 
-project(':library').name = 'fontawesome'
-
 includeBuild('plugin') {
     dependencySubstitution {
         substitute module('com.github.gmazzo:gradle-fontawesome-plugin') with project(':')

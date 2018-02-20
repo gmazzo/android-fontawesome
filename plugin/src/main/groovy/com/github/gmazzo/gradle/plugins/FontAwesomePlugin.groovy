@@ -14,57 +14,64 @@ public class FontAwesomePlugin implements Plugin<Project> {
     void apply(Project project) {
         def extension = project.extensions.create('fontawesome', FontAwesomePluginExtension)
 
-        project.with {
-            def resourcesDir = "$buildDir/generated/res/fontawesome"
-            def drawablesDir = file("$resourcesDir/drawable")
-            def stringResFile = file("$resourcesDir/values/fontawesome.xml")
+        extension.includeStyles.toUnique().each { styleEnum ->
+            def style = styleEnum.name().toLowerCase()
+            def taskName = style.capitalize()
 
-            def baseUrl = new URL('https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/fonts')
-            def svgFontUrl = new URL("$baseUrl/fontawesome-webfont.svg")
-            def svgFontFile = file("$buildDir/intermediates/fontawesome/webfont.svg")
-            def ttfFontUrl = new URL("$baseUrl/fontawesome-webfont.ttf")
-            def ttfFontFile = file("$resourcesDir/font/fontawesome.ttf")
+            project.with {
+                def resourcesDir = "$buildDir/generated/res/fontawesome_$style"
+                def drawablesDir = file("$resourcesDir/drawable")
+                def stringResFile = file("$resourcesDir/values/fontawesome_${style}.xml")
 
-            tasks.create('downloadFontAwesomeSvg', DownloadFileTask) {
-                url = svgFontUrl
-                outFile = svgFontFile
-            }
+                def baseUrl = new URL("https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/web-fonts-with-css/webfonts/${styleEnum.fontFile}")
+                def svgFontUrl = new URL("${baseUrl}.svg")
+                def svgFontFile = file("$buildDir/intermediates/fontawesome/webfont-${style}.svg")
+                def ttfFontUrl = new URL("${baseUrl}.ttf")
+                def ttfFontFile = file("$resourcesDir/font/fontawesome_${style}.ttf")
 
-            tasks.create('generateFontAwesomeResFont', DownloadFileTask) {
-                onlyIf { extension.generateFontResource }
-
-                url = ttfFontUrl
-                outFile = ttfFontFile
-            }
-
-            tasks.create('generateFontAwesomeResValues', GenerateFontStringResourcesTask) {
-                onlyIf { extension.generateFontResource }
-                dependsOn downloadFontAwesomeSvg
-
-                it.extension = extension
-                it.svgFont = svgFontFile
-                it.outputFile = stringResFile
-            }
-
-            tasks.create('generateFontAwesomeResDrawables', GenerateFontDrawablesTask) {
-                onlyIf { extension.generateDrawableGlyphsResources }
-                dependsOn downloadFontAwesomeSvg
-
-                it.extension = extension
-                it.svgFont = svgFontFile
-                it.outputDir = drawablesDir
-            }
-
-            afterEvaluate {
-                if (!plugins.any { p -> p instanceof AppPlugin || p instanceof LibraryPlugin }) {
-                    throw new IllegalStateException('The Android plugin is required.')
+                def downloadTask = tasks.create("downloadFontAwesome${taskName}Svg", DownloadFileTask) {
+                    url = svgFontUrl
+                    outFile = svgFontFile
                 }
 
-                android {
-                    sourceSets.main.res.srcDirs resourcesDir
+                def generateFontTask = tasks.create("generateFontAwesome${taskName}ResFont", DownloadFileTask) {
+                    onlyIf { extension.generateFontResource }
 
-                    (it.hasProperty('applicationVariants') ? applicationVariants : libraryVariants).all {
-                        tasks["generate${it.name.capitalize()}ResValues"].dependsOn generateFontAwesomeResFont, generateFontAwesomeResValues, generateFontAwesomeResDrawables
+                    url = ttfFontUrl
+                    outFile = ttfFontFile
+                }
+
+                def generateValuesTask = tasks.create("generateFontAwesome${taskName}ResValues", GenerateFontStringResourcesTask) {
+                    onlyIf { extension.generateFontResource }
+                    dependsOn downloadTask
+
+                    it.extension = extension
+                    it.fontStyle = style
+                    it.svgFont = svgFontFile
+                    it.outputFile = stringResFile
+                }
+
+                def generateDrawablesTask = tasks.create("generateFontAwesome${taskName}ResDrawables", GenerateFontDrawablesTask) {
+                    onlyIf { extension.generateDrawableGlyphsResources }
+                    dependsOn downloadTask
+
+                    it.extension = extension
+                    it.fontStyle = style
+                    it.svgFont = svgFontFile
+                    it.outputDir = drawablesDir
+                }
+
+                afterEvaluate {
+                    if (!plugins.any { p -> p instanceof AppPlugin || p instanceof LibraryPlugin }) {
+                        throw new IllegalStateException('The Android plugin is required.')
+                    }
+
+                    android {
+                        sourceSets.main.res.srcDirs resourcesDir
+
+                        (it.hasProperty('applicationVariants') ? applicationVariants : libraryVariants).all {
+                            tasks["generate${it.name.capitalize()}ResValues"].dependsOn generateFontTask, generateValuesTask, generateDrawablesTask
+                        }
                     }
                 }
             }
